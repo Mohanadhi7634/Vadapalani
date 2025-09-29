@@ -18,7 +18,8 @@ router.get('/', (req, res) => {
 
 // Webhook receive (POST)
 router.post('/', async (req, res) => {
-  res.sendStatus(200); // always respond quickly
+  console.log('📩 Incoming webhook:', JSON.stringify(req.body, null, 2)); // debug log
+  res.sendStatus(200);
 
   try {
     const entry = req.body.entry?.[0];
@@ -27,12 +28,14 @@ router.post('/', async (req, res) => {
 
     if (messages) {
       for (const msg of messages) {
+        console.log("🔍 Handling message:", msg); // debug log
         await handleMessage(msg);
       }
     }
   } catch (err) {
-    console.error('Webhook error:', err.message);
+    console.error('❌ Webhook error:', err.message);
   }
 });
+
 
 module.exports = router;
