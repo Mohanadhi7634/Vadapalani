@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
   const challenge = req.query['hub.challenge'];
 
   if (mode && token && mode === 'subscribe' && token === VERIFY_TOKEN) {
+    console.log("✅ Webhook verified");
     return res.status(200).send(challenge);
   }
   res.sendStatus(403);
@@ -18,7 +19,7 @@ router.get('/', (req, res) => {
 
 // Webhook receive (POST)
 router.post('/', async (req, res) => {
-  console.log('📩 Incoming webhook:', JSON.stringify(req.body, null, 2)); // debug log
+  console.log('📩 Incoming webhook:', JSON.stringify(req.body, null, 2));
   res.sendStatus(200);
 
   try {
@@ -28,7 +29,7 @@ router.post('/', async (req, res) => {
 
     if (messages) {
       for (const msg of messages) {
-        console.log("🔍 Handling message:", msg); // debug log
+        console.log("🔍 Handling message:", msg);
         await handleMessage(msg);
       }
     }
@@ -36,6 +37,5 @@ router.post('/', async (req, res) => {
     console.error('❌ Webhook error:', err.message);
   }
 });
-
 
 module.exports = router;

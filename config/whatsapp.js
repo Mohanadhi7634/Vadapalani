@@ -5,12 +5,18 @@ const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 
 async function sendMessage(data) {
   const url = `https://graph.facebook.com/v15.0/${PHONE_NUMBER_ID}/messages`;
-  return axios.post(url, data, {
-    headers: {
-      Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  try {
+    const res = await axios.post(url, data, {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("✅ Message sent:", res.data);
+    return res.data;
+  } catch (err) {
+    console.error("❌ Error sending message:", err.response?.data || err.message);
+  }
 }
 
 async function sendText(to, text) {
@@ -25,6 +31,7 @@ async function sendText(to, text) {
 async function sendMenuButtons(to) {
   return sendMessage({
     messaging_product: 'whatsapp',
+    recipient_type: "individual",
     to,
     type: 'interactive',
     interactive: {
