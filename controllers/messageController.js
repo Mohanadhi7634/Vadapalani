@@ -1,11 +1,11 @@
-const { sendText, sendMenuButtons } = require('../config/whatsapp');
+const { sendText, sendMenuButtons, sendPaginatedText } = require('../config/whatsapp');
 const MESSAGES = require('../utils/messages');
 
 exports.handleMessage = async (message) => {
   const from = message.from;
   let text = '';
 
-  // If text message
+  // Text messages
   if (message.type === 'text') {
     text = message.text.body.trim().toLowerCase();
 
@@ -13,7 +13,7 @@ exports.handleMessage = async (message) => {
       return sendMenuButtons(from);
     }
     if (text === '1' || text.includes('தலவரலாறு')) {
-      return sendText(from, MESSAGES.TALAVARALAR);
+      return sendPaginatedText(from, MESSAGES.TALAVARALAR, from);
     }
     if (text === '2' || text.includes('பூஜை')) {
       return sendText(from, MESSAGES.POOJA_VIPARAM);
@@ -25,11 +25,12 @@ exports.handleMessage = async (message) => {
     return sendText(from, 'மன்னிக்கவும். "hi" அனுப்பி மெனு பார்க்கவும்.');
   }
 
-  // If button clicked
+  // Interactive button clicks
   if (message.type === 'interactive') {
     const btnId = message.interactive.button_reply.id;
-    if (btnId === 'TALAVARALAR') {
-      return sendText(from, MESSAGES.TALAVARALAR);
+
+    if (btnId === 'TALAVARALAR' || btnId === 'MORE') {
+      return sendPaginatedText(from, MESSAGES.TALAVARALAR, from);
     }
     if (btnId === 'POOJA') {
       return sendText(from, MESSAGES.POOJA_VIPARAM);

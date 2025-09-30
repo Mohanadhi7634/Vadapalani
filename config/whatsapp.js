@@ -3,6 +3,9 @@ const axios = require('axios');
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 
+// Keep track of user progress for paginated text
+const userProgress = {};
+
 async function sendMessage(data) {
   const url = `https://graph.facebook.com/v15.0/${PHONE_NUMBER_ID}/messages`;
   try {
@@ -19,6 +22,7 @@ async function sendMessage(data) {
   }
 }
 
+// Send plain text
 async function sendText(to, text) {
   return sendMessage({
     messaging_product: 'whatsapp',
@@ -28,6 +32,7 @@ async function sendText(to, text) {
   });
 }
 
+// Send menu buttons
 async function sendMenuButtons(to) {
   return sendMessage({
     messaging_product: 'whatsapp',
@@ -48,4 +53,37 @@ async function sendMenuButtons(to) {
   });
 }
 
-module.exports = { sendText, sendMenuButtons };
+// Send long text in chunks with "More" button
+async function sendPaginatedText(to, text, id) {
+  const chunkSize = 4000;
+  const chunks = [];
+  for (let i = 0; i < text.length; i += chunkSize) {
+    chunks.push(text.slice(i, i + chunkSize));
+  }
+
+  // Get user progress
+  let index = userProgress[id] || 0;
+  const chunk = chunks[index];
+
+  // Send the chunk with More button if not last
+  await sendMessage({
+    messaging_product: "whatsapp",
+    to,
+    type: "interactive",
+    interactive: {
+      type: "button",
+      body: { text: chunk },
+      action: {
+        buttons: index < chunks.length - 1
+          ? [{ type: "reply", reply: { id: "MORE", title: "More" } }]
+          : []
+      }
+    }
+  });
+
+  // Update progress
+  if (index < chunks.length - 1) userProgress[id] = index + 1;
+  else delete userProgress[id];
+}
+
+module.exports = { sendText, sendMenuButtons, sendPaginatedText };
