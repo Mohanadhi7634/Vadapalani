@@ -1,11 +1,10 @@
+// config/whatsapp.js
 const axios = require('axios');
 
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 
-// Track which chunk each user is on
-const userProgress = {};
-
+// Send message via WhatsApp Cloud API
 async function sendMessage(data) {
   const url = `https://graph.facebook.com/v15.0/${PHONE_NUMBER_ID}/messages`;
   try {
@@ -22,7 +21,7 @@ async function sendMessage(data) {
   }
 }
 
-// Send a normal text message
+// Regular text message
 async function sendText(to, text) {
   return sendMessage({
     messaging_product: 'whatsapp',
@@ -32,7 +31,7 @@ async function sendText(to, text) {
   });
 }
 
-// Send menu buttons
+// Menu buttons
 async function sendMenuButtons(to) {
   return sendMessage({
     messaging_product: 'whatsapp',
@@ -53,9 +52,12 @@ async function sendMenuButtons(to) {
   });
 }
 
-// Send long text in chunks with "More" button
+// Track user progress for long messages
+const userProgress = {};
+
+// Send long messages in chunks with "More" button
 async function sendPaginatedText(to, text, userId) {
-  const chunkSize = 4000; // WhatsApp max ~4096
+  const chunkSize = 1000; // max 1024 for button body
   const chunks = [];
 
   for (let i = 0; i < text.length; i += chunkSize) {
@@ -69,18 +71,23 @@ async function sendPaginatedText(to, text, userId) {
     ? [{ type: 'reply', reply: { id: 'MORE', title: 'More' } }]
     : [];
 
-  await sendMessage({
-    messaging_product: 'whatsapp',
-    to,
-    type: 'interactive',
-    interactive: {
-      type: 'button',
-      body: { text: chunk },
-      action: { buttons }
-    }
-  });
+  if (buttons.length > 0) {
+    // Interactive button message
+    await sendMessage({
+      messaging_product: 'whatsapp',
+      to,
+      type: 'interactive',
+      interactive: {
+        type: 'button',
+        body: { text: chunk },
+        action: { buttons }
+      }
+    });
+  } else {
+    // Last chunk as normal text
+    await sendText(to, chunk);
+  }
 
-  // Update progress
   if (index < chunks.length - 1) userProgress[userId] = index + 1;
   else delete userProgress[userId];
 }

@@ -3,10 +3,11 @@ const MESSAGES = require('../utils/messages');
 
 exports.handleMessage = async (message) => {
   const from = message.from;
+  let text = '';
 
   // If text message
   if (message.type === 'text') {
-    const text = message.text.body.trim().toLowerCase();
+    text = message.text.body.trim().toLowerCase();
 
     if (['hi', 'hii', 'hello', 'வணக்கம்'].includes(text)) {
       return sendMenuButtons(from);
@@ -28,7 +29,7 @@ exports.handleMessage = async (message) => {
   if (message.type === 'interactive') {
     const btnId = message.interactive.button_reply.id;
 
-    if (btnId === 'TALAVARALAR' || btnId === 'MORE') {
+    if (btnId === 'TALAVARALAR') {
       return sendPaginatedText(from, MESSAGES.TALAVARALAR, from);
     }
     if (btnId === 'POOJA') {
@@ -36,6 +37,10 @@ exports.handleMessage = async (message) => {
     }
     if (btnId === 'KATTANAM') {
       return sendPaginatedText(from, MESSAGES.KATTANA, from);
+    }
+    if (btnId === 'MORE') {
+      // Continue sending next chunk
+      return sendPaginatedText(from, MESSAGES.TALAVARALAR, from);
     }
   }
 };
