@@ -52,44 +52,21 @@ async function sendMenuButtons(to) {
   });
 }
 
-// Track user progress for long messages
+// Track user progress for long messages (optional, can remove if stateless)
 const userProgress = {};
 
-// Send long messages in chunks with "More" button
-async function sendPaginatedText(to, text, userId) {
-  const chunkSize = 1000; // max 1024 for button body
+// Send long messages in chunks automatically (no "More" button)
+async function sendPaginatedText(to, text) {
+  const chunkSize = 3000; // < 4096 safe for WhatsApp text
   const chunks = [];
 
   for (let i = 0; i < text.length; i += chunkSize) {
     chunks.push(text.slice(i, i + chunkSize));
   }
 
-  let index = userProgress[userId] || 0;
-  const chunk = chunks[index];
-
-  const buttons = index < chunks.length - 1
-    ? [{ type: 'reply', reply: { id: 'MORE', title: 'More' } }]
-    : [];
-
-  if (buttons.length > 0) {
-    // Interactive button message
-    await sendMessage({
-      messaging_product: 'whatsapp',
-      to,
-      type: 'interactive',
-      interactive: {
-        type: 'button',
-        body: { text: chunk },
-        action: { buttons }
-      }
-    });
-  } else {
-    // Last chunk as normal text
+  for (const chunk of chunks) {
     await sendText(to, chunk);
   }
-
-  if (index < chunks.length - 1) userProgress[userId] = index + 1;
-  else delete userProgress[userId];
 }
 
-module.exports = { sendText, sendMenuButtons, sendPaginatedText, userProgress };
+module.exports = { sendText, sendMenuButtons, sendPaginatedText };
