@@ -1,10 +1,8 @@
-// config/whatsapp.js
 const axios = require('axios');
 
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 
-// Send message via WhatsApp Cloud API
 async function sendMessage(data) {
   const url = `https://graph.facebook.com/v15.0/${PHONE_NUMBER_ID}/messages`;
   try {
@@ -21,7 +19,7 @@ async function sendMessage(data) {
   }
 }
 
-// Regular text message
+// Regular text
 async function sendText(to, text) {
   return sendMessage({
     messaging_product: 'whatsapp',
@@ -31,8 +29,8 @@ async function sendText(to, text) {
   });
 }
 
-// Menu buttons
-async function sendMenuButtons(to) {
+// --- MENU PAGE 1 ---
+async function sendMenuPage1(to) {
   return sendMessage({
     messaging_product: 'whatsapp',
     recipient_type: "individual",
@@ -45,30 +43,40 @@ async function sendMenuButtons(to) {
         buttons: [
           { type: 'reply', reply: { id: 'TALAVARALAR', title: '1. தலவரலாறு' } },
           { type: 'reply', reply: { id: 'POOJA', title: '2. பூஜை விபரம்' } },
-          { type: 'reply', reply: { id: 'KATTANAM', title: '3. கட்டண தரிசனம்' } },
-          { type: 'reply', reply: { id: 'MARRIAGE', title: '4. திருமணம் பற்றிய விவரங்கள்' } },
-          
+          { type: 'reply', reply: { id: 'NEXT_MENU', title: '👉 மேலும்...' } }
         ]
       }
     }
   });
 }
 
-// Track user progress for long messages (optional, can remove if stateless)
-const userProgress = {};
+// --- MENU PAGE 2 ---
+async function sendMenuPage2(to) {
+  return sendMessage({
+    messaging_product: 'whatsapp',
+    recipient_type: "individual",
+    to,
+    type: 'interactive',
+    interactive: {
+      type: 'button',
+      body: { text: 'மேலும் விருப்பங்கள்:' },
+      action: {
+        buttons: [
+          { type: 'reply', reply: { id: 'KATTANAM', title: '3. கட்டண தரிசனம்' } },
+          { type: 'reply', reply: { id: 'MARRIAGE', title: '4. திருமணம் விவரங்கள்' } },
+          { type: 'reply', reply: { id: 'BACK_MENU', title: '⬅️ பின்செல்' } }
+        ]
+      }
+    }
+  });
+}
 
-// Send long messages in chunks automatically (no "More" button)
+// Split long text safely
 async function sendPaginatedText(to, text) {
-  const chunkSize = 3000; // < 4096 safe for WhatsApp text
-  const chunks = [];
-
+  const chunkSize = 3000;
   for (let i = 0; i < text.length; i += chunkSize) {
-    chunks.push(text.slice(i, i + chunkSize));
-  }
-
-  for (const chunk of chunks) {
-    await sendText(to, chunk);
+    await sendText(to, text.slice(i, i + chunkSize));
   }
 }
 
-module.exports = { sendText, sendMenuButtons, sendPaginatedText };
+module.exports = { sendText, sendMenuPage1, sendMenuPage2, sendPaginatedText };
