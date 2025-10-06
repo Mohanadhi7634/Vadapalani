@@ -1,35 +1,31 @@
 // handlers/messageHandler.js
-const { sendText, sendPaginatedText } = require('../config/whatsapp');
+const { sendText, sendMenuList, sendPaginatedText } = require('../config/whatsapp');
 const MESSAGES = require('../utils/messages');
 
 exports.handleMessage = async (message) => {
   const from = message.from;
   let text = '';
 
+  // If it's a text message
   if (message.type === 'text') {
     text = message.text.body.trim().toLowerCase();
 
     if (['hi', 'hii', 'hello', 'வணக்கம்'].includes(text)) {
-      // Send plain text menu (no buttons)
-      return sendText(from, MESSAGES.WELCOME_MENU);
-    }
-
-    if (text === '1' || text.includes('தலவரலாறு')) {
-      return sendPaginatedText(from, MESSAGES.TALAVARALAR);
-    }
-
-    if (text === '2' || text.includes('பூஜை')) {
-      return sendPaginatedText(from, MESSAGES.POOJA_VIPARAM);
-    }
-
-    if (text === '3' || text.includes('கட்டண')) {
-      return sendPaginatedText(from, MESSAGES.KATTANA);
-    }
-
-    if (text === '4' || text.includes('திருமணம்')) {
-      return sendPaginatedText(from, MESSAGES.MARRIAGE);
+      return sendMenuList(from); // send list menu
     }
 
     return sendText(from, 'மன்னிக்கவும். "hi" அனுப்பி மெனு பார்க்கவும்.');
   }
+
+  // If user selects list item
+  if (message.type === 'interactive' && message.interactive.list_reply) {
+    const listId = message.interactive.list_reply.id;
+
+    if (listId === 'TALAVARALAR') return sendPaginatedText(from, MESSAGES.TALAVARALAR);
+    if (listId === 'POOJA') return sendPaginatedText(from, MESSAGES.POOJA_VIPARAM);
+    if (listId === 'KATTANAM') return sendPaginatedText(from, MESSAGES.KATTANA);
+    if (listId === 'MARRIAGE') return sendPaginatedText(from, MESSAGES.MARRIAGE);
+  }
+
+  return sendText(from, 'மன்னிக்கவும். சரியான விருப்பத்தைத் தேர்வு செய்யவும்.');
 };
