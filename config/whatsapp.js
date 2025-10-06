@@ -43,6 +43,7 @@ async function sendMenuPage1(to) {
         buttons: [
           { type: 'reply', reply: { id: 'TALAVARALAR', title: '1. தலவரலாறு' } },
           { type: 'reply', reply: { id: 'POOJA', title: '2. பூஜை விபரம்' } },
+           { type: 'reply', reply: { id: 'KATTANAM', title: '3. கட்டண தரிசனம்' } },
           { type: 'reply', reply: { id: 'NEXT_MENU', title: '👉 மேலும்...' } }
         ]
       }
@@ -62,7 +63,7 @@ async function sendMenuPage2(to) {
       body: { text: 'மேலும் விருப்பங்கள்:' },
       action: {
         buttons: [
-          { type: 'reply', reply: { id: 'KATTANAM', title: '3. கட்டண தரிசனம்' } },
+         
           { type: 'reply', reply: { id: 'MARRIAGE', title: '4. திருமணம் விவரங்கள்' } },
           { type: 'reply', reply: { id: 'BACK_MENU', title: '⬅️ பின்செல்' } }
         ]
