@@ -4,15 +4,15 @@ const axios = require('axios');
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 
-// ✅ Send message via WhatsApp Cloud API
+// Send message via WhatsApp Cloud API
 async function sendMessage(data) {
-  const url = `https://graph.facebook.com/v21.0/${PHONE_NUMBER_ID}/messages`; // updated to v21.0
+  const url = `https://graph.facebook.com/v15.0/${PHONE_NUMBER_ID}/messages`;
   try {
     const res = await axios.post(url, data, {
       headers: {
         Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
     console.log("✅ Message sent:", res.data);
     return res.data;
@@ -21,52 +21,51 @@ async function sendMessage(data) {
   }
 }
 
-// ✅ Send regular text message
+// Regular text message
 async function sendText(to, text) {
   return sendMessage({
     messaging_product: 'whatsapp',
     to,
     type: 'text',
-    text: { body: text },
+    text: { body: text }
   });
 }
 
-// ✅ Send menu buttons
+// Menu buttons
 async function sendMenuButtons(to) {
   return sendMessage({
     messaging_product: 'whatsapp',
-    recipient_type: 'individual',
+    recipient_type: "individual",
     to,
     type: 'interactive',
     interactive: {
       type: 'button',
-      body: {
-        text: 'அருள்மிகு வட பழநி ஆண்டவர் திருக்கோயில் தங்களை வரவேற்கிறது!\nதிருக்கோயில் சம்மந்தப்பட்ட அனைத்து தகவல்களும் தெரிந்து கொள்ள கீழே உள்ளவற்றில் தேர்ந்தெடுக்கவும்:',
-      },
+      body: { text: 'வடபழநி கோயில் தங்களை வரவேற்கிறோம். தேர்வு செய்யவும்:' },
       action: {
         buttons: [
-          { type: 'reply', reply: { id: 'THARISANAM', title: '1. தரிசன நேரம்' } },
-          { type: 'reply', reply: { id: 'ABISHEGAM_NERAM', title: '2. அபிஷேகம் நேரம்' } },
-          { type: 'reply', reply: { id: 'ABISHEGAM_CHARGE', title: '3. அபிஷேகம் கட்டண விவரங்கள்' } },
-          { type: 'reply', reply: { id: 'KATANAM', title: '4. கட்டண விவரங்கள்' } },
-          { type: 'reply', reply: { id: 'PIRATHANAI_KATTANAM', title: '5. பிரார்த்தனை கட்டண விவரங்கள்' } },
-          { type: 'reply', reply: { id: 'PIRASAATHAM', title: '6. பிரசாத திட்ட விவரங்கள்' } },
-          { type: 'reply', reply: { id: 'ANNATHANAM', title: '7. அன்னதானம்' } },
-          { type: 'reply', reply: { id: 'NANKODAI', title: '8. நன்கொடை' } },
-          { type: 'reply', reply: { id: 'MUDIKANIAKAI', title: '9. முடிகாணிக்கை' } },
-          { type: 'reply', reply: { id: 'PARKING', title: '10. பார்க்கிங் பற்றிய விவரங்கள்' } },
-          { type: 'reply', reply: { id: 'MARRIAGE', title: '11. திருமணம் பற்றிய விவரங்கள்' } },
-        ],
-      },
-    },
+          { type: 'reply', reply: { id: 'TALAVARALAR', title: '1. தலவரலாறு' } },
+          { type: 'reply', reply: { id: 'POOJA', title: '2. பூஜை விபரம்' } },
+          { type: 'reply', reply: { id: 'KATTANAM', title: '3. கட்டண தரிசனம்' } }
+        ]
+      }
+    }
   });
 }
 
-// ✅ Split long messages automatically
+// Track user progress for long messages (optional, can remove if stateless)
+const userProgress = {};
+
+// Send long messages in chunks automatically (no "More" button)
 async function sendPaginatedText(to, text) {
-  const chunkSize = 3000; // under WhatsApp safe limit
+  const chunkSize = 3000; // < 4096 safe for WhatsApp text
+  const chunks = [];
+
   for (let i = 0; i < text.length; i += chunkSize) {
-    await sendText(to, text.slice(i, i + chunkSize));
+    chunks.push(text.slice(i, i + chunkSize));
+  }
+
+  for (const chunk of chunks) {
+    await sendText(to, chunk);
   }
 }
 
