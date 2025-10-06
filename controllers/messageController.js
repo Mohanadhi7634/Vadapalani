@@ -22,6 +22,9 @@ exports.handleMessage = async (message) => {
     if (text === '3' || text.includes('கட்டண')) {
       return sendPaginatedText(from, MESSAGES.KATTANA);
     }
+    if (text === '4' || text.includes('திருமணம் பற்றிய விவரங்கள்')) {
+      return sendPaginatedText(from, MESSAGES.MARRIAGE);
+    }
 
     return sendText(from, 'மன்னிக்கவும். "hi" அனுப்பி மெனு பார்க்கவும்.');
   }
@@ -38,6 +41,9 @@ exports.handleMessage = async (message) => {
     }
     if (btnId === 'KATTANAM') {
       return sendPaginatedText(from, MESSAGES.KATTANA);
+    }
+    if (btnId === 'MARRIAGE') {
+      return sendPaginatedText(from, MESSAGES.MARRIAGE);
     }
   }
 };

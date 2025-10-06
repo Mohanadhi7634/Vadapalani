@@ -45,7 +45,9 @@ async function sendMenuButtons(to) {
         buttons: [
           { type: 'reply', reply: { id: 'TALAVARALAR', title: '1. தலவரலாறு' } },
           { type: 'reply', reply: { id: 'POOJA', title: '2. பூஜை விபரம்' } },
-          { type: 'reply', reply: { id: 'KATTANAM', title: '3. கட்டண தரிசனம்' } }
+          { type: 'reply', reply: { id: 'KATTANAM', title: '3. கட்டண தரிசனம்' } },
+          { type: 'reply', reply: { id: 'MARRIAGE', title: '4. திருமணம் பற்றிய விவரங்கள்' } },
+          
         ]
       }
     }
