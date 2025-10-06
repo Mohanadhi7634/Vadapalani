@@ -1,11 +1,11 @@
-const { sendText, sendMenuList, sendPaginatedText } = require('../config/whatsapp');
+const { sendText, sendPaginatedText, sendMenuList } = require('../config/whatsapp');
 const MESSAGES = require('../utils/messages');
 
 exports.handleMessage = async (message) => {
   const from = message.from;
   let text = '';
 
-  // Text message
+  // Handle text messages
   if (message.type === 'text') {
     text = message.text.body.trim().toLowerCase();
     if (['hi', 'hii', 'hello', 'வணக்கம்', 'ji'].includes(text)) {
@@ -14,7 +14,7 @@ exports.handleMessage = async (message) => {
     return sendText(from, 'மன்னிக்கவும். "hi" அனுப்பி மெனு பார்க்கவும்.');
   }
 
-  // Interactive list reply
+  // Handle interactive list replies
   if (message.type === 'interactive' && message.interactive.list_reply) {
     const listId = message.interactive.list_reply.id;
 
