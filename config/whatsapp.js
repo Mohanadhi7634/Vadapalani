@@ -1,4 +1,3 @@
-// config/whatsapp.js
 const axios = require('axios');
 
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
@@ -31,8 +30,7 @@ async function sendText(to, text) {
   });
 }
 
-// WhatsApp list menu (titles ≤ 24 chars)
-// config/whatsapp.js (sendMenuList function)
+// Send menu as WhatsApp list (max 10 rows per section)
 async function sendMenuList(to) {
   return sendMessage({
     messaging_product: 'whatsapp',
@@ -41,17 +39,13 @@ async function sendMenuList(to) {
     type: 'interactive',
     interactive: {
       type: 'list',
-      body: {
-        text: '🌸 அருள்மிகு வட பழநி ஆண்டவர் திருக்கோயில் தங்களை வரவேற்கிறது.\n\nதிருக்கோயில் சம்பந்தப்பட்ட அனைத்து தகவல்களும் தெரிந்து கொள்ள கீழே கொடுக்கப்பட்டுள்ள தகவல்களில் தேர்ந்தெடுக்கவும் 👇'
-      },
-      footer: {
-        text: 'விருப்பத்தைத் தேர்வு செய்யுங்கள்.'
-      },
+      body: { text: '🌸 அருள்மிகு வடபழநி ஆண்டவர் திருக்கோயில் தங்களை வரவேற்கிறது.\nதேர்வு செய்யவும் 👇' },
+      footer: { text: 'விருப்பத்தைத் தேர்வு செய்யுங்கள்.' },
       action: {
         button: '📜 மெனு திறக்க',
         sections: [
           {
-            title: 'கோவில் தகவல்கள்',
+            title: 'கோவில் தகவல்கள் - பாகம் 1',
             rows: [
               { id: 'DARISANAM', title: '1️⃣ தரிசனம்', description: 'தரிசன நேரம்' },
               { id: 'ABISHEGAM_TIME', title: '2️⃣ அபிஷேகம்', description: 'அபிஷேகம் நேரம்' },
@@ -66,10 +60,9 @@ async function sendMenuList(to) {
             ]
           },
           {
-            title: 'திருமணம் & முக்கிய தகவல்கள்',
+            title: 'கோவில் தகவல்கள் - பாகம் 2',
             rows: [
               { id: 'MARRIAGE', title: '1️⃣ திருமணம்', description: 'திருமணச் சான்றிதழ்கள் & கட்டணம்' }
-              // You can add more items here if needed (max 10 per section)
             ]
           }
         ]
@@ -78,16 +71,13 @@ async function sendMenuList(to) {
   });
 }
 
-
-// Send long message in chunks
+// Long message (split into chunks)
 async function sendPaginatedText(to, text) {
-  const chunkSize = 3000;
+  const chunkSize = 3000; // safe limit
   const chunks = [];
-
   for (let i = 0; i < text.length; i += chunkSize) {
     chunks.push(text.slice(i, i + chunkSize));
   }
-
   for (const chunk of chunks) {
     await sendText(to, chunk);
   }
