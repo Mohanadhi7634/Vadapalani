@@ -42,7 +42,7 @@ async function sendPaginatedText(to, text) {
 async function sendMenuList(to) {
   const allRows = [
     { id: 'DARISANAM', title: '1️⃣ தரிசனம்', description: 'தரிசன நேரம்' },
-    { id: 'ABISHEGAM_TIME', title: '2️⃣ அபிஷேகம்', description: 'அபிஷேகம் நேரம்' },
+    { id: 'ABISHEGAM_TIME', title: '2️⃣ அபிஷேகம் நேரம்', description: 'அபிஷேகம் நேரம்' },
     { id: 'ABISHEGAM_FEES', title: '3️⃣ அபிஷேகம் கட்டணம்', description: 'அபிஷேகம் கட்டண விவரங்கள்' },
     { id: 'KATTANA_FEES', title: '4️⃣ கட்டண விவரங்கள்', description: 'திருக்கல்யாணம் & அபிஷேகம்' },
     { id: 'PRARTHANA', title: '5️⃣ பிரார்த்தனை', description: 'பிரார்த்தனை கட்டண விவரங்கள்' },
@@ -54,31 +54,34 @@ async function sendMenuList(to) {
     { id: 'MARRIAGE', title: '1️⃣ திருமணம்', description: 'திருமணச் சான்றிதழ்கள் & கட்டணம்' }
   ];
 
-  // Split rows into chunks of 10
+  // Split rows into chunks of 10 (max 10 rows per section)
   const chunks = [];
   for (let i = 0; i < allRows.length; i += 10) {
     chunks.push(allRows.slice(i, i + 10));
   }
 
-  for (const [index, chunk] of chunks.entries()) {
-    await sendMessage({
-      messaging_product: 'whatsapp',
-      recipient_type: "individual",
-      to,
-      type: 'interactive',
-      interactive: {
-        type: 'list',
-        body: { text: '🌸 அருள்மிகு வடபழநி கோயில் தங்களை வரவேற்கிறது.\nதேர்வு செய்யவும் 👇' },
-        footer: { text: 'விருப்பத்தைத் தேர்வு செய்யுங்கள்.' },
-        action: {
-          button: '📜 மெனு திறக்க',
-          sections: [
-            { title: `கோவில் தகவல்கள் - பாகம் ${index + 1}`, rows: chunk }
-          ]
-        }
+  const sections = chunks.map((chunk, idx) => ({
+    title: `கோவில் பாகம் ${idx + 1}`, // <= 24 chars
+    rows: chunk
+  }));
+
+  // Send single interactive list with multiple sections
+  await sendMessage({
+    messaging_product: 'whatsapp',
+    recipient_type: "individual",
+    to,
+    type: 'interactive',
+    interactive: {
+      type: 'list',
+      body: { text: '🌸 அருள்மிகு வடபழநி கோயில் தங்களை வரவேற்கிறது.\nதேர்வு செய்யவும் 👇' },
+      footer: { text: 'விருப்பத்தைத் தேர்வு செய்யுங்கள்.' },
+      action: {
+        button: '📜 மெனு திறக்க',
+        sections: sections
       }
-    });
-  }
+    }
+  });
 }
+
 
 module.exports = { sendText, sendPaginatedText, sendMenuList };
