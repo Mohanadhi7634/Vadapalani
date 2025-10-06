@@ -1,5 +1,6 @@
 // handlers/messageHandler.js
 const { sendText, sendMenuList, sendPaginatedText } = require('../config/whatsapp');
+
 const MESSAGES = require('../utils/messages');
 
 exports.handleMessage = async (message) => {
