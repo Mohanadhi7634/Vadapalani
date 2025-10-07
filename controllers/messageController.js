@@ -6,7 +6,7 @@ exports.handleMessage = async (message) => {
   const from = message.from;
   let text = "";
 
-  // ✅ Handle plain text input
+  // ✅ Handle text input
   if (message.type === "text") {
     text = message.text.body.trim().toLowerCase();
 
@@ -16,7 +16,6 @@ exports.handleMessage = async (message) => {
       return;
     }
 
-    // Manual "next" command (optional)
     if (text === "next") {
       await sendPaginatedText(from, "🛕 ஆலய தகவல் மெனு", "MAIN_MENU", allRows, 1);
       return;
@@ -25,25 +24,25 @@ exports.handleMessage = async (message) => {
     await sendText(from, "⚠️ தெரியாத கட்டளை. தயவுசெய்து 'hi' அல்லது 'வணக்கம்' எனத் தட்டச்சு செய்யவும்.");
   }
 
-  // ✅ Handle list reply
+  // ✅ Handle interactive replies
   if (message.type === "interactive" && message.interactive.type === "list_reply") {
     const selectionId = message.interactive.list_reply.id;
     console.log("✅ Selected:", selectionId);
 
-    // ✅ Pagination handler
+    // Pagination
     if (selectionId.startsWith("NEXT_MENU_")) {
       const nextIndex = parseInt(selectionId.split("_").pop());
       await sendPaginatedText(from, "🛕 ஆலய தகவல் மெனு", "MAIN_MENU", allRows, nextIndex);
       return;
     }
 
-    // ✅ Back button handler
+    // Back to main
     if (selectionId === "BACK_TO_MAIN") {
       await sendPaginatedText(from, "🛕 ஆலய தகவல் மெனு", "MAIN_MENU", allRows, 0);
       return;
     }
 
-    // ✅ Normal menu item selected
+    // Regular message
     const response = MESSAGES[selectionId] || "⚠️ தவறான விருப்பம்.";
     await sendText(from, response);
   }
