@@ -1,64 +1,46 @@
-const { sendText, sendPaginatedText, sendMenuList, sendMessageWithMainMenu } = require('../config/whatsapp');
+const { sendText, sendMenuButtons, sendPaginatedText } = require('../config/whatsapp');
 const MESSAGES = require('../utils/messages');
+const allRows = require('../utils/allRows');
 
 exports.handleMessage = async (message) => {
   const from = message.from;
   let text = '';
 
-  // Handle text messages
   if (message.type === 'text') {
     text = message.text.body.trim().toLowerCase();
 
-    if (['hi', 'hii', 'hello', 'வணக்கம்', 'ji'].includes(text)) {
-      return sendMenuList(from, 0); // Show first menu
+    if (['hi', 'hii', 'hello', 'vanakkam', 'ji'].includes(text)) {
+      await sendText(from, "🙏 வணக்கம்! வரவேற்கிறோம்! மெனுவைக் காண கீழே உள்ளதைத் தொடவும் 👇");
+
+      // ✅ First page (index 0)
+      await sendPaginatedText(from, "🛕 ஆலய தகவல் மெனு", "MAIN_MENU", allRows, 0);
+      return;
     }
 
-    return sendText(from, 'மன்னிக்கவும். "hi" அனுப்பி மெனு பார்க்கவும்.');
+    // If the user types "next" manually (optional)
+    if (text === 'next') {
+      await sendPaginatedText(from, "🛕 ஆலய தகவல் மெனு", "MAIN_MENU", allRows, 1);
+      return;
+    }
+
+    // Default fallback
+    await sendText(from, "⚠️ தெரியாத கட்டளை. தயவுசெய்து 'hi' அல்லது 'வணக்கம்' எனத் தட்டச்சு செய்யவும்.");
   }
 
-  // Handle interactive responses
-  if (message.type === 'interactive') {
-    // Button reply (Go to Main Menu)
-    if (message.interactive.button_reply) {
-      const buttonId = message.interactive.button_reply.id;
-      if (buttonId === 'GO_MAIN_MENU') {
-        return sendMenuList(from, 0);
-      }
+  // Handle list replies
+  if (message.type === 'interactive' && message.interactive.type === 'list_reply') {
+    const selectionId = message.interactive.list_reply.id;
+    console.log("✅ Selected:", selectionId);
+
+    // Pagination handler
+    if (selectionId.startsWith('NEXT_MENU_')) {
+      const nextIndex = parseInt(selectionId.split('_').pop());
+      await sendPaginatedText(from, "🛕 ஆலய தகவல் மெனு", "MAIN_MENU", allRows, nextIndex);
+      return;
     }
 
-    // List reply
-    if (message.interactive.list_reply) {
-      const listId = message.interactive.list_reply.id;
-
-      // Handle "Next menu"
-      if (listId.startsWith('NEXT_MENU_')) {
-        const nextIndex = parseInt(listId.split('_')[2]);
-        return sendMenuList(from, nextIndex);
-      }
-
-      // Handle content replies
-      const replyMap = {
-        DARISANAM: MESSAGES.DARISANAM,
-        ABISHEGAM_TIME: MESSAGES.ABISHEGAM_TIME,
-        ABISHEGAM_FEES: MESSAGES.ABISHEGAM_FEES,
-        KATTANA_FEES: MESSAGES.KATTANA_FEES,
-        PRARTHANA: MESSAGES.PRARTHANA,
-        PRASADHA: MESSAGES.PRASADHA,
-        ANNADHANAM: MESSAGES.ANNADHANAM,
-        NANKODAI: MESSAGES.NANKODAI,
-        MUDIKANIKAI: MESSAGES.MUDIKANIKAI,
-        PARKING: MESSAGES.PARKING,
-        MARRIAGE: MESSAGES.MARRIAGE,
-      };
-
-      if (replyMap[listId]) {
-        await sendPaginatedText(from, replyMap[listId]);
-        return sendMessageWithMainMenu(from, '🔙 முதன்மை மெனுவிற்கு திரும்ப கீழே உள்ள பொத்தானை அழுத்தவும்.');
-      }
-
-      return sendText(from, 'மன்னிக்கவும். சரியான விருப்பத்தைத் தேர்வு செய்யவும்.');
-    }
+    // Otherwise handle normal menu selections
+    const response = MESSAGES[selectionId] || "⚠️ தவறான விருப்பம்.";
+    await sendText(from, response);
   }
-
-  return sendText(from, 'மன்னிக்கவும். சரியான விருப்பத்தைத் தேர்வு செய்யவும்.');
 };
