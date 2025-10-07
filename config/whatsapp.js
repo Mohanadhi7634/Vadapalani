@@ -34,7 +34,7 @@ async function sendText(to, text) {
 
 // ✅ Send paginated list with “Next” & “Back”
 async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
-  const chunkSize = 8; // 8 rows per page (safe)
+  const chunkSize = 9; // 8 rows per page (safe)
   const chunks = [];
 
   // Split rows into chunks
