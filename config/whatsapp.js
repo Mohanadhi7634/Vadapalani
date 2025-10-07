@@ -3,7 +3,7 @@ const axios = require("axios");
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 
-// 🔹 Send message via WhatsApp Cloud API
+// ✅ Send message helper
 async function sendMessage(data) {
   const url = `https://graph.facebook.com/v17.0/${PHONE_NUMBER_ID}/messages`;
   try {
@@ -22,7 +22,7 @@ async function sendMessage(data) {
   }
 }
 
-// 🔹 Send text message
+// ✅ Send simple text
 async function sendText(to, text) {
   await sendMessage({
     messaging_product: "whatsapp",
@@ -32,30 +32,19 @@ async function sendText(to, text) {
   });
 }
 
-// 🔹 Send image message
-async function sendImage(to, imageUrl, caption = "") {
-  await sendMessage({
-    messaging_product: "whatsapp",
-    to,
-    type: "image",
-    image: {
-      link: imageUrl,
-      caption,
-    },
-  });
-}
-
-// 🔹 Send paginated list menu
+// ✅ Paginated list (supports Next + Back)
 async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
-  const chunkSize = 9;
+  const chunkSize = 9; // up to 9 items per page
   const chunks = [];
 
+  // Split into pages
   for (let i = 0; i < allRows.length; i += chunkSize) {
     chunks.push(allRows.slice(i, i + chunkSize));
   }
 
   const menuRows = chunks[menuIndex] ? [...chunks[menuIndex]] : [];
 
+  // ✅ Add "Next" button (short title to avoid limit error)
   if (menuIndex < chunks.length - 1) {
     menuRows.push({
       id: `NEXT_MENU_${menuIndex + 1}`,
@@ -64,6 +53,7 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
     });
   }
 
+  // ✅ Add "Back" button
   if (menuIndex > 0) {
     menuRows.push({
       id: `BACK_TO_MAIN`,
@@ -79,8 +69,8 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
     interactive: {
       type: "list",
       header: { type: "text", text: title },
-      body: { text: "தயவுசெய்து ஒரு விருப்பத்தைத் தேர்வுசெய்க 👇" },
-      footer: { text: "Powered by Mohan Bot 🤖" },
+      body: { text: "திருக்கோயில் சம்மந்தப்பட்ட அனைத்து தகவல்களும் தெரிந்து கொள்ள கீழே கொடுக்கப்பட்டுள்ள தகவல்களில் தேர்ந்தெடுக்கவும்👇" },
+      // footer: { text: "Powered by Mohan Bot 🤖" },
       action: {
         button: "🔽 மெனுவைக் காண",
         sections: [
@@ -96,7 +86,7 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
   await sendMessage(data);
 }
 
-// 🔹 Send text with “Back” button
+// ✅ Send single message with content + back button
 async function sendTextWithBackButton(to, text) {
   const data = {
     messaging_product: "whatsapp",
@@ -109,7 +99,10 @@ async function sendTextWithBackButton(to, text) {
         buttons: [
           {
             type: "reply",
-            reply: { id: "BACK_TO_MAIN", title: "⬅️ Back" },
+            reply: {
+              id: "BACK_TO_MAIN",
+              title: "🔙 Back",
+            },
           },
         ],
       },
@@ -122,5 +115,4 @@ module.exports = {
   sendText,
   sendPaginatedText,
   sendTextWithBackButton,
-  sendImage,
 };
