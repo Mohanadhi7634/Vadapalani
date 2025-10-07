@@ -1,4 +1,4 @@
-const { sendText, sendPaginatedText, sendBackButton } = require("../config/whatsapp");
+const { sendText, sendPaginatedText, sendTextWithBackButton } = require("../config/whatsapp");
 const MESSAGES = require("../utils/messages");
 const allRows = require("../utils/allRows");
 
@@ -38,16 +38,15 @@ exports.handleMessage = async (message) => {
       return;
     }
 
-    // ✅ Regular data response
+    // ✅ Normal option message (single message + back button)
     const response = MESSAGES[selectionId] || "⚠️ தவறான விருப்பம்.";
-    await sendText(from, response);
-    await sendBackButton(from); // add back button after viewing
+    const combinedMessage = `${response}\n\nமுதன்மை மெனுவிற்கு திரும்ப வேண்டுமா?`;
+    await sendTextWithBackButton(from, combinedMessage);
   }
 
-  // ✅ Handle back button click from details
+  // ✅ Handle back button click
   if (message.type === "interactive" && message.interactive.type === "button_reply") {
     const buttonId = message.interactive.button_reply.id;
-
     if (buttonId === "BACK_TO_MAIN") {
       await sendPaginatedText(from, "🛕 ஆலய தகவல் மெனு", "MAIN_MENU", allRows, 0);
     }

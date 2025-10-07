@@ -86,22 +86,22 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
   await sendMessage(data);
 }
 
-// ✅ After showing message, show back button to main
-async function sendBackButton(to) {
+// ✅ Send single message with content + back button
+async function sendTextWithBackButton(to, text) {
   const data = {
     messaging_product: "whatsapp",
     to,
     type: "interactive",
     interactive: {
       type: "button",
-      body: { text: "🔙 முதன்மை மெனுவிற்கு திரும்ப வேண்டுமா?" },
+      body: { text },
       action: {
         buttons: [
           {
             type: "reply",
             reply: {
               id: "BACK_TO_MAIN",
-              title: "⬅️ Back",
+              title: "🔙 Back",
             },
           },
         ],
@@ -114,5 +114,5 @@ async function sendBackButton(to) {
 module.exports = {
   sendText,
   sendPaginatedText,
-  sendBackButton,
+  sendTextWithBackButton,
 };
