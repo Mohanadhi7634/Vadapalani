@@ -1,4 +1,4 @@
-const { sendText, sendPaginatedText, sendMenuList } = require('../config/whatsapp');
+const { sendText, sendPaginatedText, sendMenuList, sendMessageWithMainMenu } = require('../config/whatsapp');
 const MESSAGES = require('../utils/messages');
 
 exports.handleMessage = async (message) => {
@@ -8,30 +8,55 @@ exports.handleMessage = async (message) => {
   // Handle text messages
   if (message.type === 'text') {
     text = message.text.body.trim().toLowerCase();
+
     if (['hi', 'hii', 'hello', 'வணக்கம்', 'ji'].includes(text)) {
-      return sendMenuList(from);
+      return sendMenuList(from, 0); // Show first menu
     }
+
     return sendText(from, 'மன்னிக்கவும். "hi" அனுப்பி மெனு பார்க்கவும்.');
   }
 
-  // Handle interactive list replies
-  if (message.type === 'interactive' && message.interactive.list_reply) {
-    const listId = message.interactive.list_reply.id;
+  // Handle interactive responses
+  if (message.type === 'interactive') {
+    // Button reply (Go to Main Menu)
+    if (message.interactive.button_reply) {
+      const buttonId = message.interactive.button_reply.id;
+      if (buttonId === 'GO_MAIN_MENU') {
+        return sendMenuList(from, 0);
+      }
+    }
 
-    switch (listId) {
-      case 'DARISANAM': return sendPaginatedText(from, MESSAGES.DARISANAM);
-      case 'ABISHEGAM_TIME': return sendPaginatedText(from, MESSAGES.ABISHEGAM_TIME);
-      case 'ABISHEGAM_FEES': return sendPaginatedText(from, MESSAGES.ABISHEGAM_FEES);
-      case 'KATTANA_FEES': return sendPaginatedText(from, MESSAGES.KATTANA_FEES);
-      case 'PRARTHANA': return sendPaginatedText(from, MESSAGES.PRARTHANA);
-      case 'PRASADHA': return sendPaginatedText(from, MESSAGES.PRASADHA);
-      case 'ANNADHANAM': return sendPaginatedText(from, MESSAGES.ANNADHANAM);
-      case 'NANKODAI': return sendPaginatedText(from, MESSAGES.NANKODAI);
-      case 'MUDIKANIKAI': return sendPaginatedText(from, MESSAGES.MUDIKANIKAI);
-      case 'PARKING': return sendPaginatedText(from, MESSAGES.PARKING);
-      case 'MARRIAGE': return sendPaginatedText(from, MESSAGES.MARRIAGE);
-      default:
-        return sendText(from, 'மன்னிக்கவும். சரியான விருப்பத்தைத் தேர்வு செய்யவும்.');
+    // List reply
+    if (message.interactive.list_reply) {
+      const listId = message.interactive.list_reply.id;
+
+      // Handle "Next menu"
+      if (listId.startsWith('NEXT_MENU_')) {
+        const nextIndex = parseInt(listId.split('_')[2]);
+        return sendMenuList(from, nextIndex);
+      }
+
+      // Handle content replies
+      const replyMap = {
+        DARISANAM: MESSAGES.DARISANAM,
+        ABISHEGAM_TIME: MESSAGES.ABISHEGAM_TIME,
+        ABISHEGAM_FEES: MESSAGES.ABISHEGAM_FEES,
+        KATTANA_FEES: MESSAGES.KATTANA_FEES,
+        PRARTHANA: MESSAGES.PRARTHANA,
+        PRASADHA: MESSAGES.PRASADHA,
+        ANNADHANAM: MESSAGES.ANNADHANAM,
+        NANKODAI: MESSAGES.NANKODAI,
+        MUDIKANIKAI: MESSAGES.MUDIKANIKAI,
+        PARKING: MESSAGES.PARKING,
+        MARRIAGE: MESSAGES.MARRIAGE,
+      };
+
+      if (replyMap[listId]) {
+        await sendPaginatedText(from, replyMap[listId]);
+        return sendMessageWithMainMenu(from, '🔙 முதன்மை மெனுவிற்கு திரும்ப கீழே உள்ள பொத்தானை அழுத்தவும்.');
+      }
+
+      return sendText(from, 'மன்னிக்கவும். சரியான விருப்பத்தைத் தேர்வு செய்யவும்.');
     }
   }
 
