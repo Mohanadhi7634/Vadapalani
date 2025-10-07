@@ -1,9 +1,10 @@
+// config/whatsapp.js
 const axios = require("axios");
 
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 
-// ✅ Send message helper
+// ✅ Common send function
 async function sendMessage(data) {
   const url = `https://graph.facebook.com/v17.0/${PHONE_NUMBER_ID}/messages`;
   try {
@@ -19,32 +20,35 @@ async function sendMessage(data) {
       "❌ Error sending message:",
       JSON.stringify(error.response?.data, null, 2)
     );
+
+    // ⚠️ Return error info to let caller decide fallback
+    throw error;
   }
 }
 
-// ✅ Send simple text
+// ✅ Simple text sender
 async function sendText(to, text) {
-  await sendMessage({
+  const data = {
     messaging_product: "whatsapp",
     to,
     type: "text",
     text: { body: text },
-  });
+  };
+  await sendMessage(data);
 }
 
-// ✅ Paginated list (supports Next + Back)
+// ✅ Send paginated list (adds fallback for PC)
 async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
-  const chunkSize = 9; // up to 9 items per page
+  const chunkSize = 9; // WhatsApp limit
   const chunks = [];
 
-  // Split into pages
   for (let i = 0; i < allRows.length; i += chunkSize) {
     chunks.push(allRows.slice(i, i + chunkSize));
   }
 
   const menuRows = chunks[menuIndex] ? [...chunks[menuIndex]] : [];
 
-  // ✅ Add "Next" button (short title to avoid limit error)
+  // Add navigation
   if (menuIndex < chunks.length - 1) {
     menuRows.push({
       id: `NEXT_MENU_${menuIndex + 1}`,
@@ -52,8 +56,6 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
       description: "அடுத்த மெனுவைப் பார்க்க",
     });
   }
-
-  // ✅ Add "Back" button
   if (menuIndex > 0) {
     menuRows.push({
       id: `BACK_TO_MAIN`,
@@ -69,8 +71,9 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
     interactive: {
       type: "list",
       header: { type: "text", text: title },
-      body: { text: "திருக்கோயில் சம்மந்தப்பட்ட அனைத்து தகவல்களும் தெரிந்து கொள்ள கீழே கொடுக்கப்பட்டுள்ள தகவல்களில் தேர்ந்தெடுக்கவும்👇" },
-      // footer: { text: "Powered by Mohan Bot 🤖" },
+      body: {
+        text: "திருக்கோயில் சம்மந்தப்பட்ட அனைத்து தகவல்களும் தெரிந்து கொள்ள கீழே உள்ளவற்றில் தேர்ந்தெடுக்கவும்👇",
+      },
       action: {
         button: "🔽 மெனுவைக் காண",
         sections: [
@@ -83,10 +86,21 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
     },
   };
 
-  await sendMessage(data);
+  try {
+    await sendMessage(data);
+  } catch (error) {
+    console.log("⚠️ List not supported — sending fallback text instead.");
+    // Fallback simple text for PC
+    let menuText = `🛕 ${title}\n\n`;
+    menuRows.forEach((r, i) => {
+      menuText += `${i + 1}. ${r.title}\n`;
+    });
+    menuText += `\n👉 தயவு செய்து எண் அல்லது பெயரை தட்டச்சு செய்யவும்.`;
+    await sendText(to, menuText);
+  }
 }
 
-// ✅ Send single message with content + back button
+// ✅ Send text with back button
 async function sendTextWithBackButton(to, text) {
   const data = {
     messaging_product: "whatsapp",
@@ -99,16 +113,19 @@ async function sendTextWithBackButton(to, text) {
         buttons: [
           {
             type: "reply",
-            reply: {
-              id: "BACK_TO_MAIN",
-              title: "🔙 Back",
-            },
+            reply: { id: "BACK_TO_MAIN", title: "🔙 Back" },
           },
         ],
       },
     },
   };
-  await sendMessage(data);
+
+  try {
+    await sendMessage(data);
+  } catch {
+    // Fallback: plain text
+    await sendText(to, `${text}\n\n(முதன்மை மெனுவிற்கு திரும்ப 'hi' எனத் தட்டச்சு செய்யவும்)`);
+  }
 }
 
 module.exports = {
