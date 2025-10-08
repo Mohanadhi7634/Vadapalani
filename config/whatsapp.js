@@ -16,13 +16,8 @@ async function sendMessage(data) {
     });
     console.log("✅ Message sent successfully!");
   } catch (error) {
-    console.error(
-      "❌ Error sending message:",
-      JSON.stringify(error.response?.data, null, 2)
-    );
-
-    // ⚠️ Return error info to let caller decide fallback
-    throw error;
+    console.error("❌ Error sending message:", JSON.stringify(error.response?.data, null, 2));
+    throw error; // Let caller decide fallback
   }
 }
 
@@ -37,11 +32,12 @@ async function sendText(to, text) {
   await sendMessage(data);
 }
 
-// ✅ Send paginated list (adds fallback for PC)
+// ✅ Send paginated list (with fallback)
 async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
-  const chunkSize = 9; // WhatsApp limit
+  const chunkSize = 9; // WhatsApp limit (10 rows per section max)
   const chunks = [];
 
+  // Split rows into chunks of 9
   for (let i = 0; i < allRows.length; i += chunkSize) {
     chunks.push(allRows.slice(i, i + chunkSize));
   }
@@ -90,7 +86,9 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
     await sendMessage(data);
   } catch (error) {
     console.log("⚠️ List not supported — sending fallback text instead.");
-    // Fallback simple text for PC
+    console.error(error.response?.data || error.message);
+
+    // Fallback simple text for PC or errors
     let menuText = `🛕 ${title}\n\n`;
     menuRows.forEach((r, i) => {
       menuText += `${i + 1}. ${r.title}\n`;
@@ -122,8 +120,8 @@ async function sendTextWithBackButton(to, text) {
 
   try {
     await sendMessage(data);
-  } catch {
-    // Fallback: plain text
+  } catch (error) {
+    console.log("⚠️ Button not supported — sending fallback text.");
     await sendText(to, `${text}\n\n(முதன்மை மெனுவிற்கு திரும்ப 'hi' எனத் தட்டச்சு செய்யவும்)`);
   }
 }
