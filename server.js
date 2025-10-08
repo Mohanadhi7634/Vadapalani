@@ -7,9 +7,6 @@ const webhookRoutes = require('./routes/webhookRoutes');
 const app = express();
 app.use(bodyParser.json());
 
-// 🟢 Serve static files (for images)
-app.use(express.static('public'));
-
 // Routes
 app.use('/webhook', webhookRoutes);
 
