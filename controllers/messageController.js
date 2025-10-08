@@ -1,5 +1,4 @@
 const { sendText, sendPaginatedText, sendTextWithBackButton, sendMessage } = require("../config/whatsapp");
-
 const MESSAGES = require("../utils/messages");
 const allRows = require("../utils/allRows");
 
@@ -21,28 +20,41 @@ exports.handleMessage = async (message) => {
     // 🔢 Handle numeric selection
     const number = parseInt(text);
     if (!isNaN(number) && number > 0 && number <= allRows.length) {
-      const selected = allRows[number - 1];
+      const selectedOption = allRows[number - 1];
 
-      // 🖼️ Option 12: TEMPLE_PHOTO
-      if (selected.id === "TEMPLE_PHOTO") {
+      // 🖼️ TEMPLE_PHOTO
+      if (selectedOption.id === "TEMPLE_PHOTO") {
         const data = {
           messaging_product: "whatsapp",
           to: from,
-          type: "image",
-          image: {
-            link: "https://res.cloudinary.com/dyaubvua4/image/upload/v1759909099/Vadapalani_Andavar_ismvwo.jpg",
-            caption: "🙏 வட பழநி ஆண்டவர் திருக்கோவில் படம் 🙏"
+          type: "interactive",
+          interactive: {
+            type: "button",
+            header: {
+              type: "image",
+              image: {
+                link: "https://res.cloudinary.com/dyaubvua4/image/upload/v1759909099/Vadapalani_Andavar_ismvwo.jpg"
+              }
+            },
+            body: {
+              text: "🙏 வட பழநி ஆண்டவர் திருக்கோவில் படம் 🙏"
+            },
+            action: {
+              buttons: [
+                {
+                  type: "reply",
+                  reply: { id: "BACK_TO_MAIN", title: "🔙 பின் செல்ல" }
+                }
+              ]
+            }
           }
         };
         await sendMessage(data);
-
-        // Optional back button
-        await sendTextWithBackButton(from, "🔙 முதன்மை மெனுவிற்கு திரும்ப");
         return;
       }
 
       // 📝 Default: text responses
-      const response = MESSAGES[selected.id] || "⚠️ தவறான விருப்பம்.";
+      const response = MESSAGES[selectedOption.id] || "⚠️ தவறான விருப்பம்.";
       await sendTextWithBackButton(from, `${response}\n\nமுதன்மை மெனுவிற்கு திரும்ப வேண்டுமா?`);
       return;
     }
@@ -66,40 +78,38 @@ exports.handleMessage = async (message) => {
       return;
     }
 
-   if (selected.id === "TEMPLE_PHOTO") {
-  const data = {
-    messaging_product: "whatsapp",
-    to: from,
-    type: "interactive",
-    interactive: {
-      type: "button",
-      header: {
-        type: "image",
-        image: {
-          link: "https://res.cloudinary.com/dyaubvua4/image/upload/v1759909099/Vadapalani_Andavar_ismvwo.jpg"
-        }
-      },
-      body: {
-        text: "🙏 வட பழநி ஆண்டவர் திருக்கோவில் படம் 🙏"
-      },
-      action: {
-        buttons: [
-          {
-            type: "reply",
-            reply: {
-              id: "BACK_TO_MAIN",
-              title: "🔙 பின் செல்ல"
+    // 🖼️ TEMPLE_PHOTO for list replies
+    if (selectionId === "TEMPLE_PHOTO") {
+      const data = {
+        messaging_product: "whatsapp",
+        to: from,
+        type: "interactive",
+        interactive: {
+          type: "button",
+          header: {
+            type: "image",
+            image: {
+              link: "https://res.cloudinary.com/dyaubvua4/image/upload/v1759909099/Vadapalani_Andavar_ismvwo.jpg"
             }
+          },
+          body: {
+            text: "🙏 வட பழநி ஆண்டவர் திருக்கோவில் படம் 🙏"
+          },
+          action: {
+            buttons: [
+              {
+                type: "reply",
+                reply: { id: "BACK_TO_MAIN", title: "🔙 பின் செல்ல" }
+              }
+            ]
           }
-        ]
-      }
+        }
+      };
+      await sendMessage(data);
+      return;
     }
-  };
 
-  await sendMessage(data); // send the interactive image message
-  return; // done
-}
-
+    // 📝 Default text for other list options
     const response = MESSAGES[selectionId] || "⚠️ தவறான விருப்பம்.";
     await sendTextWithBackButton(from, `${response}\n\nமுதன்மை மெனுவிற்கு திரும்ப வேண்டுமா?`);
   }
