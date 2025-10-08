@@ -34,16 +34,13 @@ async function sendText(to, text) {
 
 // ✅ Paginated list menu
 async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
-  const chunkSize = 9; // ✅ WhatsApp allows max 10 rows per section
+  const chunkSize = 9;
   const chunks = [];
-
   for (let i = 0; i < allRows.length; i += chunkSize) {
     chunks.push(allRows.slice(i, i + chunkSize));
   }
 
   const menuRows = chunks[menuIndex] ? [...chunks[menuIndex]] : [];
-
-  // ✅ Add navigation buttons as rows
   if (menuIndex < chunks.length - 1) {
     menuRows.push({
       id: `NEXT_MENU_${menuIndex + 1}`,
@@ -85,8 +82,6 @@ async function sendPaginatedText(to, title, menuId, allRows, menuIndex = 0) {
     await sendMessage(data);
   } catch (error) {
     console.log("⚠️ List not supported — fallback text sent.");
-    console.error(error.response?.data || error.message);
-
     let menuText = `🛕 ${title}\n\n`;
     menuRows.forEach((r, i) => {
       menuText += `${i + 1}. ${r.title}\n`;
@@ -124,8 +119,20 @@ async function sendTextWithBackButton(to, text) {
   }
 }
 
+// ✅ Image sender
+async function sendImage(to, imageUrl, caption = "") {
+  const data = {
+    messaging_product: "whatsapp",
+    to,
+    type: "image",
+    image: { link: imageUrl, caption },
+  };
+  await sendMessage(data);
+}
+
 module.exports = {
   sendText,
   sendPaginatedText,
   sendTextWithBackButton,
+  sendImage,
 };
