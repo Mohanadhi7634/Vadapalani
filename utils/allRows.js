@@ -1,9 +1,9 @@
 const allRows = [
   { id: "DARISANAM", title: "1️⃣ தரிசனம்", description: "தரிசன நேரம்" },
-  { id: "ABISHEGAM_TIME", title: "2️⃣ அபிஷேகம்", description: "அபிஷேகம் நேரம் & அலங்கார விவரம்" },
-  { id: "ABISHEGAM_FEES", title: "3️⃣ அபிஷேகம்", description: "அபிஷேகம் கட்டண விவரம்" },
+  { id: "ABISHEGAM_TIME", title: "2️⃣ அபிஷேகம் நேரம்", description: "அபிஷேக நேரம் & அலங்கார விவரம்" },
+  { id: "ABISHEGAM_FEES", title: "3️⃣ அபிஷேகம் கட்டணம்", description: "அபிஷேகம் கட்டண விவரம்" },
   { id: "KATTANA_FEES", title: "4️⃣ கட்டணங்கள்", description: "கட்டண விவரம்" },
-  { id: "PRARTHANA", title: "5️⃣ பிரார்த்தனை", description: "பிரார்த்தனை கட்டணங்கள்" },
+  { id: "PRARTHANA", title: "5️⃣ பிரார்த்தனை கட்டணம்", description: "பிரார்த்தனை கட்டணங்கள்" },
   { id: "PRASADHA", title: "6️⃣ பிரசாதம்", description: "பிரசாத திட்ட விவரம்" },
   { id: "ANNADHANAM", title: "7️⃣ அன்னதானம்", description: "அன்னதான விதிகள்" },
   { id: "NANKODAI", title: "8️⃣ நன்கொடை", description: "நன்கொடைகள் & வழிகள்" },
