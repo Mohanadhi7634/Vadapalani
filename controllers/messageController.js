@@ -1,7 +1,6 @@
 const { sendText, sendPaginatedText, sendTextWithBackButton, sendMessage } = require("../config/whatsapp");
 const MESSAGES = require("../utils/messages");
 const allRows = require("../utils/allRows");
-const abishegamFees = require("../utils/abishegamFees");
 
 exports.handleMessage = async (message) => {
   const from = message.from;
@@ -37,27 +36,20 @@ exports.handleMessage = async (message) => {
                 link: "https://res.cloudinary.com/dyaubvua4/image/upload/v1759909099/Vadapalani_Andavar_ismvwo.jpg"
               }
             },
-            body: { text: "🙏 வட பழநி ஆண்டவர் திருக்கோவில் படம் 🙏" },
+            body: {
+              text: "🙏 வட பழநி ஆண்டவர் திருக்கோவில் படம் 🙏"
+            },
             action: {
               buttons: [
-                { type: "reply", reply: { id: "BACK_TO_MAIN", title: "🔙 பின் செல்ல" } }
+                {
+                  type: "reply",
+                  reply: { id: "BACK_TO_MAIN", title: "🔙 பின் செல்ல" }
+                }
               ]
             }
           }
         };
         await sendMessage(data);
-        return;
-      }
-
-      // 💰 Abishegam Fees
-      if (selectedOption.id === "ABISHEGAM_FEES") {
-        let messageText = '💰 *அபிஷேக கட்டணங்கள்*\n\n';
-        abishegamFees.forEach(item => {
-          messageText += `- ${item.title} – ${item.description}\n`;
-          if (item.url) messageText += `[பணம் செலுத்த](${item.url})\n`;
-          messageText += '\n';
-        });
-        await sendTextWithBackButton(from, messageText);
         return;
       }
 
@@ -100,27 +92,20 @@ exports.handleMessage = async (message) => {
               link: "https://res.cloudinary.com/dyaubvua4/image/upload/v1759909099/Vadapalani_Andavar_ismvwo.jpg"
             }
           },
-          body: { text: "🙏 வட பழநி ஆண்டவர் திருக்கோவில் படம் 🙏" },
+          body: {
+            text: "🙏 வட பழநி ஆண்டவர் திருக்கோவில் படம் 🙏"
+          },
           action: {
             buttons: [
-              { type: "reply", reply: { id: "BACK_TO_MAIN", title: "🔙 பின் செல்ல" } }
+              {
+                type: "reply",
+                reply: { id: "BACK_TO_MAIN", title: "🔙 பின் செல்ல" }
+              }
             ]
           }
         }
       };
       await sendMessage(data);
-      return;
-    }
-
-    // 💰 Abishegam Fees for list replies
-    if (selectionId === "ABISHEGAM_FEES") {
-      let messageText = '💰 *அபிஷேக கட்டணங்கள்*\n\n';
-      abishegamFees.forEach(item => {
-        messageText += `- ${item.title} – ${item.description}\n`;
-        if (item.url) messageText += `[பணம் செலுத்த](${item.url})\n`;
-        messageText += '\n';
-      });
-      await sendTextWithBackButton(from, messageText);
       return;
     }
 
