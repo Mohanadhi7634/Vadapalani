@@ -7,6 +7,11 @@ const webhookRoutes = require('./routes/webhookRoutes');
 const app = express();
 app.use(bodyParser.json());
 
+// ✅ Simple keep-alive route
+app.get('/ping', (req, res) => {
+  res.status(200).send('✅ Bot is alive');
+});
+
 // Routes
 app.use('/webhook', webhookRoutes);
 
