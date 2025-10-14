@@ -71,7 +71,7 @@ async function sendTextWithBackButton(to, text) {
     messaging_product: "whatsapp",
     to,
     type: "interactive",
-    interactive: { type: "button", body: { text }, action: { buttons: [{ type: "reply", reply: { id: "BACK_TO_MAIN", title: "🔙 பின் செல்ல" } }] } },
+    interactive: { type: "button", body: { text }, action: { buttons: [{ type: "reply", reply: { id: "BACK_TO_MAIN", title: "பின் செல்ல" } }] } },
   };
   try { await sendMessage(data); } 
   catch (error) { console.log("⚠️ Button not supported — fallback text sent."); await sendText(to, `${text}\n\n(முதன்மை மெனுவிற்கு திரும்ப 'hi' எனத் தட்டச்சு செய்யவும்)`); }
