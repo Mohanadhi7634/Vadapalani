@@ -46,8 +46,8 @@ ABISHEGAM_FEES: `
 - விபூதி பஞ்சாமிர்த அபிஷேகம் (சித்தர் ஆலயம்) – ₹1,700  
 - பால் அபிஷேகம் – ₹700  
 
-🌐 முன்பதிவு செய்ய 👉 
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
+🌐 முன்பதிவு செய்ய 👇  
+🔗(https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
 
 📞 மேலும் விவரங்களுக்கு ஆலய அலுவலகத்தை அணுகவும்.
 `
@@ -63,8 +63,8 @@ KATTANA_FEES: `
 - காது குத்த (நபர் 1க்கு) – ₹100  
 - முடிக்கான காணிக்கை (நபர் 1க்கு) – இலவசம்
 
-🌐 முன்பதிவு செய்ய 👉 
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
+🌐 முன்பதிவு செய்ய 👇  
+🔗 (https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
 `
 ,
 
@@ -81,8 +81,8 @@ PRARTHANA: `
 - நெய் விளக்கு (எண்ணிக்கை 2) – ₹15  
 - நல்லெண்ணெய் விளக்கு (எண்ணிக்கை 2) – ₹15 
 
-🌐 முன்பதிவு செய்ய 👉 
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
+🌐 முன்பதிவு செய்ய 👇 
+🔗(https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
 `
 ,
 
