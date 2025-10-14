@@ -99,7 +99,7 @@ exports.handleMessage = async (message) => {
             buttons: [
               {
                 type: "reply",
-                reply: { id: "BACK_TO_MAIN", title: "🔙 பின் செல்ல" }
+                reply: { id: "BACK_TO_MAIN", title: " பின் செல்ல" }
               }
             ]
           }
