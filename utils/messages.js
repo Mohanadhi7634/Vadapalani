@@ -42,15 +42,12 @@ ABISHEGAM_FEES: `
 💰 *அபிஷேக கட்டணங்கள்*
 
 - 108 சங்காபிஷேகம் – ₹6,500  
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collection.php?tid=6&scode=21&sscode=1&target_type=&fees_slno=33062&group_id=4&action=P)
-
 - சந்தனக்காப்பு (காலை 11:00 & மாலை 05:00) – ₹3,700  
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collection.php?tid=6&scode=21&sscode=1&target_type=&fees_slno=33898&group_id=4&action=P)
-
 - விபூதி பஞ்சாமிர்த அபிஷேகம் (சித்தர் ஆலயம்) – ₹1,700  
-
 - பால் அபிஷேகம் – ₹700  
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collection.php?tid=6&scode=21&sscode=1&target_type=&fees_slno=94712&group_id=4&action=P)
+
+🌐 முன்பதிவு செய்ய 👉 
+  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
 
 📞 மேலும் விவரங்களுக்கு ஆலய அலுவலகத்தை அணுகவும்.
 `
@@ -60,20 +57,14 @@ KATTANA_FEES: `
 📜 *கட்டண விவரங்கள்*
 
 - அன்னைத் தமிழ் அர்ச்சனை – ₹5  
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collection.php?tid=6&scode=21&sscode=1&target_type=&fees_slno=84054&group_id=4&action=P)
-
 - அர்ச்சனை டிக்கெட் (1க்கு) – ₹5  
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collection.php?tid=6&scode=21&sscode=1&target_type=&fees_slno=3291&group_id=4&action=P)
-
 - சிறப்பு அனுமதி (விழாக்காலங்களில்) – ₹100  
-
 - சிறப்பு நுழைவு சாதாரண நாட்கள் (நபர் 1க்கு) – ₹50  
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collection.php?tid=6&scode=21&sscode=1&target_type=&fees_slno=93685&group_id=4&action=P)
-
 - காது குத்த (நபர் 1க்கு) – ₹100  
-  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collection.php?tid=6&scode=21&sscode=1&target_type=&fees_slno=3506&group_id=4&action=P)
-
 - முடிக்கான காணிக்கை (நபர் 1க்கு) – இலவசம்
+
+🌐 முன்பதிவு செய்ய 👉 
+  🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
 `
 ,
 
@@ -88,7 +79,9 @@ PRARTHANA: `
 - நாள் முழுவதும் பிரசாதம் – ₹5,000  
 - துலாபாரத் திட்டம் – ₹15  
 - நெய் விளக்கு (எண்ணிக்கை 2) – ₹15  
-- நல்லெண்ணெய் விளக்கு (எண்ணிக்கை 2) – ₹15  
+- நல்லெண்ணெய் விளக்கு (எண்ணிக்கை 2) – ₹15 
+
+🌐 முன்பதிவு செய்ய 👉 
   🔗 [பணம் செலுத்த](https://vadapalaniandavar.hrce.tn.gov.in/ticketing/service_collectionindex.php?tid=6&scode=21&sscode=1&target_type=1&group_id=4)
 `
 ,
