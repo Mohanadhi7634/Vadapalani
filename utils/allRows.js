@@ -1,5 +1,5 @@
 const allRows = [
-  { id: "DARISANAM", title: "1️⃣ வழிபாட்டு நேரம்", description: "வழிபாட்டு நேரம்" },
+  { id: "DARISANAM", title: "1️⃣ வழிபாடு", description: "வழிபாட்டு நேரம்" },
   { id: "ABISHEGAM_TIME", title: "2️⃣ அபிஷேக நேரம்", description: "அபிஷேக நேரம் &  அலங்கார விவரம்" },
   { id: "ABISHEGAM_FEES", title: "3️⃣ அபிஷேகக் கட்டணம்", description: "அபிஷேகக் கட்டண விவரம்" },
   { id: "KATTANA_FEES", title: "4️⃣ கட்டணங்கள்", description: "கட்டண விவரம்" },
